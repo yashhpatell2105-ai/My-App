@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Falcon Technology</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0a0a0f 0%, #0d1a2e 60%, #091420 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .a4-page {
+      width: 100%;
+      max-width: 720px;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 0.5px solid rgba(255,255,255,0.08);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      background: #0d1a2e;
+      padding: 48px 56px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-glow {
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 240px; height: 240px;
+      background: radial-gradient(circle, rgba(55,138,221,0.18) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .falcon-logo { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+
+    .logo-icon {
+      width: 44px; height: 44px;
+      background: #378ADD;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      font-size: 13px; font-weight: 500;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.12em; text-transform: uppercase;
+    }
+
+    .page-title { font-size: 36px; font-weight: 500; color: #fff; line-height: 1.2; margin-bottom: 12px; }
+    .title-accent { color: #378ADD; }
+    .page-subtitle { font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.7; max-width: 480px; }
+
+    .tag-row { display: flex; gap: 8px; margin-top: 24px; }
+    .tag { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; border: 0.5px solid; }
+    .tag-blue { background: rgba(55,138,221,0.12); border-color: rgba(55,138,221,0.3); color: #85B7EB; }
+    .tag-teal { background: rgba(29,158,117,0.1); border-color: rgba(29,158,117,0.25); color: #5DCAA5; }
+
+    /* ── Body ── */
+    .page-body { background: #fff; padding: 40px 56px 48px; flex: 1; display: flex; flex-direction: column; gap: 32px; }
+
+    .mission-block { border-left: 3px solid #378ADD; padding-left: 20px; }
+    .mission-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #888780; margin-bottom: 8px; }
+    .mission-text { font-size: 16px; color: #2C2C2A; line-height: 1.7; }
+
+    .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .stat-card { background: #F1EFE8; border-radius: 8px; padding: 16px; text-align: center; }
+    .stat-number { font-size: 22px; font-weight: 500; color: #0d1a2e; margin-bottom: 4px; }
+    .stat-label { font-size: 12px; color: #888780; }
+
+    .divider { height: 0.5px; background: #D3D1C7; }
+
+    /* ── Detection Section ── */
+    .detect-section { display: flex; flex-direction: column; gap: 16px; }
+    .section-title { font-size: 13px; font-weight: 500; color: #444441; }
+
+    .config-row { display: flex; align-items: center; gap: 10px; }
+    .config-label { font-size: 12px; color: #888780; white-space: nowrap; }
+    .config-row input[type="text"] {
+      flex: 1; padding: 9px 12px;
+      border: 0.5px solid #D3D1C7; border-radius: 8px;
+      font-size: 13px; color: #2C2C2A; background: #fff;
+      outline: none; transition: border-color 0.2s;
+    }
+    .config-row input[type="text"]:focus { border-color: #378ADD; }
+
+    .upload-zone {
+      border: 1.5px dashed #B4B2A9; border-radius: 10px;
+      padding: 32px; text-align: center; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .upload-zone:hover { border-color: #378ADD; background: #E6F1FB; }
+    .upload-icon {
+      width: 40px; height: 40px; margin: 0 auto 12px;
+      background: #E6F1FB; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .upload-zone p { font-size: 14px; color: #888780; line-height: 1.6; }
+    .upload-zone strong { color: #378ADD; font-weight: 500; }
+    #photoInput { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+
+    /* ── Status ── */
+    .status-bar {
+      display: none; align-items: center; gap: 10px;
+      padding: 12px 16px; border-radius: 8px;
+      font-size: 13px; font-weight: 500;
+    }
+    .status-bar.loading { background: #E6F1FB; color: #185FA5; display: flex; }
+    .status-bar.success { background: #EAF3DE; color: #3B6D11; display: flex; }
+    .status-bar.error   { background: #FCEBEB; color: #A32D2D; display: flex; }
+
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(24,95,165,0.2);
+      border-top-color: #185FA5; border-radius: 50%;
+      animation: spin 0.7s linear infinite; flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Image Grid ── */
+    .image-grid { display: none; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .image-card { display: flex; flex-direction: column; gap: 8px; }
+    .image-card-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #888780; }
+    .image-card img {
+      width: 100%; border-radius: 8px;
+      border: 0.5px solid #D3D1C7; object-fit: contain;
+      background: #F1EFE8; min-height: 140px;
+    }
+
+    /* ── Summary Box ── */
+    .summary-box { display: none; flex-direction: column; gap: 14px; }
+
+    .summary-header {
+      border-left: 3px solid #378ADD;
+      padding-left: 16px;
+    }
+
+    .summary-header .mission-label { margin-bottom: 4px; }
+
+    .total-count { font-size: 22px; font-weight: 500; color: #0d1a2e; }
+
+    .label-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+    }
+
+    .label-card {
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    .label-card-count { font-size: 26px; font-weight: 500; margin-bottom: 4px; }
+    .label-card-name  { font-size: 12px; opacity: 0.8; }
+
+    /* ── Buttons ── */
+    .btn-row { display: flex; gap: 10px; }
+
+    .btn-detect {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 13px 28px; background: #378ADD; color: #fff;
+      border: none; border-radius: 8px; font-size: 15px; font-weight: 500;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .btn-detect:hover { background: #185FA5; }
+    .btn-detect:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .btn-ghost {
+      padding: 13px 18px; background: transparent; color: #888780;
+      border: 0.5px solid #D3D1C7; border-radius: 8px; font-size: 14px;
+      cursor: pointer; transition: border-color 0.2s, color 0.2s; white-space: nowrap;
+    }
+    .btn-ghost:hover { border-color: #888780; color: #444441; }
+
+    .btn-download {
+      padding: 13px 18px; background: transparent; color: #378ADD;
+      border: 0.5px solid #378ADD; border-radius: 8px; font-size: 14px; font-weight: 500;
+      cursor: pointer; text-decoration: none;
+      display: none; align-items: center; gap: 6px;
+      transition: background 0.2s; white-space: nowrap;
+    }
+    .btn-download:hover { background: #E6F1FB; }
+
+    /* ── Footer ── */
+    .page-footer {
+      padding: 20px 56px; background: #F1EFE8;
+      border-top: 0.5px solid #D3D1C7;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-copy { font-size: 12px; color: #888780; }
+    .footer-dot { width: 6px; height: 6px; border-radius: 50%; background: #378ADD; }
+
+    @media (max-width: 600px) {
+      .page-header, .page-body { padding-left: 24px; padding-right: 24px; }
+      .page-footer { padding-left: 24px; padding-right: 24px; }
+      .page-title { font-size: 26px; }
+      .stat-row, .image-grid, .label-grid { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      body { background: none; padding: 0; }
+      .a4-page { border: none; border-radius: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="a4-page">
+
+    <!-- Header -->
+    <div class="page-header">
+      <div class="header-glow"></div>
+      <div class="falcon-logo">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12 3L20 8V16L12 21L4 16V8L12 3Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M12 7L16.5 9.75V15.25L12 18L7.5 15.25V9.75L12 7Z" fill="white" fill-opacity="0.2" stroke="white" stroke-width="1"/>
+            <circle cx="12" cy="12" r="2" fill="white"/>
+          </svg>
+        </div>
+        <span class="logo-text">Falcon Technology</span>
+      </div>
+      <h1 class="page-title">Shaping the future<br>with <span class="title-accent">intelligent tech</span></h1>
+      <p class="page-subtitle">We are on a mission to make human life and work smarter — using machine learning and computer vision.</p>
+      <div class="tag-row">
+        <span class="tag tag-blue">Machine Learning</span>
+        <span class="tag tag-teal">Computer Vision</span>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="page-body">
+
+      <div class="mission-block">
+        <p class="mission-label">Our mission</p>
+        <p class="mission-text">This is the first official page of Falcon Technology. We are building AI-powered tools that simplify complex tasks and elevate the way people live and work every day.</p>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-number">AI</div><div class="stat-label">Powered solutions</div></div>
+        <div class="stat-card"><div class="stat-number">CV</div><div class="stat-label">Computer vision</div></div>
+        <div class="stat-card"><div class="stat-number">ML</div><div class="stat-label">Machine learning</div></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Detection -->
+      <div class="detect-section">
+        <p class="section-title">YOLO Object Detection</p>
+
+        <!-- Server URL -->
+        <div class="config-row">
+          <span class="config-label">Server URL</span>
+          <input type="text" id="serverUrl" value="http://localhost:5000/detect" placeholder="http://localhost:5000/detect">
+          <!-- <input type="text" id="serverUrl" value="https://eagle-7.onrender.com/detect"> -->
+        </div>
+
+        <!-- Upload zone -->
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" accept="image/*" id="photoInput">
+          <div class="upload-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+              <polyline points="17,8 12,3 7,8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <p><strong>Click to upload</strong> or drag and drop</p>
+          <p style="font-size:12px; margin-top:4px;">PNG, JPG, WEBP supported</p>
+        </div>
+
+        <!-- Status bar -->
+        <div class="status-bar" id="statusBar">
+          <div class="spinner" id="spinner"></div>
+          <span id="statusText"></span>
+        </div>
+
+        <!-- Before / After images -->
+        <div class="image-grid" id="imageGrid">
+          <div class="image-card">
+            <span class="image-card-label">Original</span>
+            <img id="originalImg" src="" alt="Original image">
+          </div>
+          <div class="image-card">
+            <span class="image-card-label">Detected</span>
+            <img id="resultImg" src="" alt="Detection result">
+          </div>
+        </div>
+
+        <!-- Detection Summary -->
+        <div class="summary-box" id="summaryBox">
+          <div class="summary-header">
+            <p class="mission-label">Detection Summary</p>
+            <p class="total-count" id="totalCount">0 objects detected</p>
+          </div>
+          <div class="label-grid" id="labelGrid"></div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="btn-row" id="actionRow" style="display:none;">
+          <button class="btn-detect" id="detectBtn" onclick="runDetection()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            Run Detection
+          </button>
+          <a class="btn-download" id="downloadBtn" href="#" download="detection-result.jpg">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+              <polyline points="7,10 12,15 17,10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download
+          </a>
+          <button class="btn-ghost" onclick="resetAll()">Reset</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="page-footer">
+      <span class="footer-copy">© 2025 Falcon Technology. All rights reserved.</span>
+      <div class="footer-dot"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const photoInput  = document.getElementById('photoInput');
+    const originalImg = document.getElementById('originalImg');
+    const resultImg   = document.getElementById('resultImg');
+    const imageGrid   = document.getElementById('imageGrid');
+    const actionRow   = document.getElementById('actionRow');
+    const detectBtn   = document.getElementById('detectBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const statusBar   = document.getElementById('statusBar');
+    const statusText  = document.getElementById('statusText');
+    const spinner     = document.getElementById('spinner');
+    const serverUrl   = document.getElementById('serverUrl');
+    const summaryBox  = document.getElementById('summaryBox');
+    const totalCount  = document.getElementById('totalCount');
+    const labelGrid   = document.getElementById('labelGrid');
+
+    let selectedFile = null;
+
+    const CARD_COLORS = [
+      { bg: '#E6F1FB', text: '#0C447C' },
+      { bg: '#EAF3DE', text: '#27500A' },
+      { bg: '#FAEEDA', text: '#633806' },
+      { bg: '#FBEAF0', text: '#72243E' },
+      { bg: '#E1F5EE', text: '#085041' },
+      { bg: '#EEEDFE', text: '#3C3489' },
+      { bg: '#FAECE7', text: '#993C1D' },
+    ];
+
+    // ── File selected ──
+    photoInput.addEventListener('change', function () {
+      const file = this.files[0];
+      if (!file) return;
+      selectedFile = file;
+      originalImg.src = URL.createObjectURL(file);
+      resultImg.src = '';
+      imageGrid.style.display = 'grid';
+      actionRow.style.display = 'flex';
+      downloadBtn.style.display = 'none';
+      summaryBox.style.display = 'none';
+      hideStatus();
+      resetBtn();
+    });
+
+    // ── Run Detection ──
+    async function runDetection() {
+      if (!selectedFile) return;
+
+      const base = serverUrl.value.trim().replace(/\/detect$/, '');
+      setStatus('loading', 'Sending image to YOLO model…');
+      detectBtn.disabled = true;
+      detectBtn.innerHTML = `<div class="spinner" style="border-color:rgba(255,255,255,0.3);border-top-color:#fff;"></div> Detecting…`;
+
+      const fd1 = new FormData();
+      fd1.append('image', selectedFile);
+
+      const fd2 = new FormData();
+      fd2.append('image', selectedFile);
+
+      try {
+        // Run both requests in parallel
+        const [imgRes, jsonRes] = await Promise.all([
+          fetch(base + '/detect', { method: 'POST', body: fd1 }),
+          fetch(base + '/detect_summary', { method: 'POST', body: fd2 }).catch(() => null)
+        ]);
+
+        if (!imgRes.ok) throw new Error(`Server error ${imgRes.status}: ${imgRes.statusText}`);
+
+        // Annotated image
+        const blob = await imgRes.blob();
+        const resultUrl = URL.createObjectURL(blob);
+        resultImg.src = resultUrl;
+        downloadBtn.href = resultUrl;
+        downloadBtn.style.display = 'flex';
+
+        // Summary
+        if (jsonRes && jsonRes.ok) {
+          const data = await jsonRes.json();
+          showSummary(data);
+        }
+
+        setStatus('success', 'Detection complete — annotated result shown on the right.');
+
+      } catch (err) {
+        setStatus('error', 'Cannot reach the server. Make sure your Flask app is running on the URL above.');
+        console.error(err);
+      } finally {
+        detectBtn.disabled = false;
+        resetBtn();
+      }
+    }
+
+    // ── Show Summary ──
+    function showSummary(data) {
+      // data = { total: 5, labels: { "candy_A": 3, "candy_B": 2 } }
+      totalCount.textContent = data.total + ' object' + (data.total !== 1 ? 's' : '') + ' detected';
+      labelGrid.innerHTML = '';
+
+      Object.entries(data.labels).forEach(([label, count], i) => {
+        const { bg, text } = CARD_COLORS[i % CARD_COLORS.length];
+        const card = document.createElement('div');
+        card.className = 'label-card';
+        card.style.background = bg;
+        card.innerHTML = `
+          <div class="label-card-count" style="color:${text};">${count}</div>
+          <div class="label-card-name"  style="color:${text};">${label}</div>`;
+        labelGrid.appendChild(card);
+      });
+
+      summaryBox.style.display = 'flex';
+    }
+
+    // ── Reset ──
+    function resetAll() {
+      selectedFile = null;
+      photoInput.value = '';
+      originalImg.src = '';
+      resultImg.src = '';
+      imageGrid.style.display = 'none';
+      actionRow.style.display = 'none';
+      downloadBtn.style.display = 'none';
+      summaryBox.style.display = 'none';
+      labelGrid.innerHTML = '';
+      hideStatus();
+      resetBtn();
+    }
+
+    function setStatus(type, msg) {
+      statusBar.className = 'status-bar ' + type;
+      statusText.textContent = msg;
+      spinner.style.display = type === 'loading' ? 'block' : 'none';
+    }
+
+    function hideStatus() { statusBar.className = 'status-bar'; }
+
+    function resetBtn() {
+      detectBtn.disabled = false;
+      detectBtn.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        Run Detection`;
+    }
+  </script>
+
+</body>
+</html>
